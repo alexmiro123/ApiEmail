@@ -23,9 +23,11 @@ class SMTPClient:
         print(f"Contraseña: {self.password}")   
         print("Enviando correo...")
 
+        recipients = [x.strip() for x in email.to.split(",") if x.strip()]
+
         msg = MIMEMultipart()
         msg["From"] = self.user
-        msg["To"] = email.to
+        msg["To"] = ", ".join(recipients)
         msg["Subject"] = email.subject
 
         msg.attach(MIMEText(email.body, "html"))
@@ -37,7 +39,7 @@ class SMTPClient:
             server.ehlo()
             server.login(self.user, self.password)
 
-            server.sendmail(self.user, email.to, msg.as_string())
+            server.sendmail(self.user, recipients, msg.as_string())
 
             print("✅ Correo enviado correctamente")
 
