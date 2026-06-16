@@ -7,4 +7,4 @@ class EmailService:
         self.client = SMTPClient()
 
     def send(self, email):
-        self.client.send_email(email)
+        return self.client.send_email(email)

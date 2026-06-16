@@ -8,23 +8,33 @@ email_bp = Blueprint("email_bp", __name__)
 @email_bp.route("/", methods=["POST"])
 def send_email():
 
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    if not data:
-        return jsonify({"error": "Body requerido"}), 400
+        if not data:
+            return jsonify({"error": "Body requerido"}), 400
 
-    if not data.get("to") or not data.get("subject") or not data.get("body"):
-        return jsonify({"error": "Faltan campos"}), 400
+        if not data.get("to") or not data.get("subject") or not data.get("body"):
+            return jsonify({"error": "Faltan campos"}), 400
 
-    email = Email(
-        to=data["to"],
-        subject=data["subject"],
-        body=data["body"]
-    )
+        email = Email(
+            to=data["to"],
+            subject=data["subject"],
+            body=data["body"]
+        )
 
-    service = EmailService()
-    service.send(email)
+        service = EmailService()
+        service.send(email)
 
-    return jsonify({
-        "message": "Correo enviado correctamente"
-    }), 200
+        return jsonify({
+            "Success": True,
+            "Message": "Correo enviado correctamente",
+            "Status": 200
+        }), 200
+    except Exception as e:
+
+        return jsonify({
+            "Success": False,
+            "Message": str(e),
+            "Status": 500
+        }), 500

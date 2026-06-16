@@ -25,12 +25,15 @@ class SMTPClient:
 
         recipients = [x.strip() for x in email.to.split(",") if x.strip()]
 
+
         msg = MIMEMultipart()
         msg["From"] = self.user
         msg["To"] = ", ".join(recipients)
         msg["Subject"] = email.subject
 
         msg.attach(MIMEText(email.body, "html"))
+
+        server = None
 
         try:
             server = smtplib.SMTP(self.server, self.port)
@@ -43,8 +46,12 @@ class SMTPClient:
 
             print("✅ Correo enviado correctamente")
 
+            return True
+
         except Exception as e:
-            print("❌ Error:", e)
+            print("❌ Error enviando correo:", e)
+            raise
 
         finally:
-            server.quit()
+            if server:
+                server.quit()
